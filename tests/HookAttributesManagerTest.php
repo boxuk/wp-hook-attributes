@@ -29,17 +29,17 @@ class HookAttributesManagerTest extends TestCase
         $expectedFilters = [
             'the_content' => [
                 [
-                    'callback' => [Example::class, 'basic_filter'],
+                    'callback' => Example::class . '::basic_filter',
                     'priority' => 10,
                     'args' => 1,
                 ],
                 [
-                    'callback' => [Example::class, 'filter_with_priority'],
+                    'callback' => Example::class . '::filter_with_priority',
                     'priority' => 99,
                     'args' => 1,
                 ],
                 [
-                    'callback' => [Example::class, 'filter_with_args'],
+                    'callback' => Example::class . '::filter_with_args',
                     'priority' => 10,
                     'args' => 2,
                 ],
@@ -58,17 +58,17 @@ class HookAttributesManagerTest extends TestCase
         $expectedActions = [
             'init' => [
                 [
-                    'callback' => [Example::class, 'basic_action'],
+                    'callback' => Example::class . '::basic_action',
                     'priority' => 10,
                     'args' => 1,
                 ],
                 [
-                    'callback' => [Example::class, 'action_with_priority'],
+                    'callback' => Example::class . '::action_with_priority',
                     'priority' => 99,
                     'args' => 1,
                 ],
                 [
-                    'callback' => [Example::class, 'action_with_args'],
+                    'callback' => Example::class . '::action_with_args',
                     'priority' => 10,
                     'args' => 2,
                 ],

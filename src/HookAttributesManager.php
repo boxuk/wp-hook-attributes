@@ -20,14 +20,12 @@ final class HookAttributesManager
     {
         $hooks = $this->hookResolver->resolveHooks();
         foreach($hooks as $hook) {
-            // Despite a class name in the format Class::method being a valid callable in PHP, is_callable() and the callable type hint don't recognise it as such.
-            [$callbackClassName, $callbackMethodName] = explode('::', $hook['callback']);
             if ($hook['hook'] instanceof Action) {
-                $this->hookCaller->addAction($hook['hook']->name, [$callbackClassName, $callbackMethodName], $hook['hook']->priority, $hook['hook']->args);
+                $this->hookCaller->addAction($hook['hook']->name, $hook['callback'], $hook['hook']->priority, $hook['hook']->args);
             }
 
             if ($hook['hook'] instanceof Filter) {
-                $this->hookCaller->addFilter($hook['hook']->name, [$callbackClassName, $callbackMethodName], $hook['hook']->priority, $hook['hook']->args);
+                $this->hookCaller->addFilter($hook['hook']->name, $hook['callback'], $hook['hook']->priority, $hook['hook']->args);
             }
         }
     }
