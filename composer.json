@@ -1,0 +1,21 @@
+{
+    "name": "boxuk/wp-hook-attributes",
+    "description": "A library to allow the user of PHP attributes for WordPress hooks",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "BoxUk\\WpHookAttributes\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BoxUk\\WpHookAttributes\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
