@@ -17,6 +17,9 @@ use BoxUk\WpHookAttributes\WordPressHookAttributes;
 Now you can annotate functions and methods with attributes to attach them to a hook.
 
 ```php
+use BoxUk\WpHookAttributes\Attributes\Action;
+use BoxUk\WpHookAttributes\Attributes\Filter;
+
 // Example of using an action hook
 #[Action('init')]
 function basic_action(): string {
