@@ -20,7 +20,7 @@ class HookResolverTest extends TestCase
     }
 
     public function test_hooks_are_resolved_on_registered_functions_file(): void {
-        $this->hookResolver->registerFunctionsFile(__DIR__ . '/resources/functions.php');
+        $this->hookResolver->registerFunctionsFile(__DIR__ . '/Resources/functions.php');
         $hooks = $this->hookResolver->resolveFunctionHooks();
 
         self::assertCount(6, $hooks); // 6 functions declared in the registered functions file.
@@ -28,7 +28,7 @@ class HookResolverTest extends TestCase
     }
 
     public function test_hooks_are_resolved_on_required_functions_file(): void {
-        require_once __DIR__ . '/resources/functions-two.php';
+        require_once __DIR__ . '/Resources/functions-two.php';
         $hookResolver = self::createHookResolver();
         $hooks = $hookResolver->resolveFunctionHooks();
 
@@ -45,7 +45,7 @@ class HookResolverTest extends TestCase
     }
 
     public function test_hooks_are_resolved_on_registered_class(): void {
-        require_once __DIR__ . '/resources/ExampleWithNoNamespace.php';
+        require_once __DIR__ . '/Resources/ExampleWithNoNamespace.php';
         $this->hookResolver->registerClass('ExampleWithNoNamespace');
         $hooks = $this->hookResolver->resolveClassHooks();
 
