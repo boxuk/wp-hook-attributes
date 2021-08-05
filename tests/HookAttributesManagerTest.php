@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class HookAttributesManagerTest extends TestCase
 {
+    use HookResolverFactory;
+
     private HookCallerInterface $hookCaller;
     private HookResolver $hookResolver;
     private HookAttributesManager $hookAttributesManager;
@@ -18,7 +20,7 @@ class HookAttributesManagerTest extends TestCase
     protected function setUp(): void
     {
         $this->hookCaller = new FakeHookCaller();
-        $this->hookResolver = new HookResolver();
+        $this->hookResolver = self::createHookResolver();
         $this->hookAttributesManager = new HookAttributesManager($this->hookResolver, $this->hookCaller);
     }
 

@@ -2,9 +2,6 @@
 
 namespace BoxUk\WpHookAttributes;
 
-use BoxUk\WpHookAttributes\Attributes\Action;
-use BoxUk\WpHookAttributes\Attributes\Filter;
-
 final class HookAttributesManager
 {
     private HookResolver $hookResolver;
@@ -20,11 +17,11 @@ final class HookAttributesManager
     {
         $hooks = $this->hookResolver->resolveHooks();
         foreach($hooks as $hook) {
-            if ($hook['hook'] instanceof Action) {
+            if ($hook['hook'] instanceof ActionInterface) {
                 $this->hookCaller->addAction($hook['hook']->name, $hook['callback'], $hook['hook']->priority, $hook['hook']->args);
             }
 
-            if ($hook['hook'] instanceof Filter) {
+            if ($hook['hook'] instanceof FilterInterface) {
                 $this->hookCaller->addFilter($hook['hook']->name, $hook['callback'], $hook['hook']->priority, $hook['hook']->args);
             }
         }

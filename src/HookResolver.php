@@ -4,13 +4,22 @@ namespace BoxUk\WpHookAttributes;
 
 use BoxUk\WpHookAttributes\Attributes\Action;
 use BoxUk\WpHookAttributes\Attributes\Filter;
+use BoxUk\WpHookAttributes\Annotations\Action as ActionAnnotation;
+use BoxUk\WpHookAttributes\Annotations\Filter as FilterAnnotation;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 
 class HookResolver
 {
+    /**
+     * @var AnnotationReader|Reader|null
+     */
+    private ?Reader $reader;
     private array $classes;
     private array $functions;
 
-    public function __construct() {
+    public function __construct(Reader $reader = null) {
+        $this->reader = $reader;
         $this->functions = get_defined_functions()['user'];
         $this->classes = get_declared_classes();
     }
@@ -49,7 +58,7 @@ class HookResolver
 
         $hooks = [];
         foreach ($attributes as $functionName => $attribute) {
-            $hook = $attribute->newInstance();
+            $hook = $attribute instanceof \ReflectionAttribute ? $attribute->newInstance() : $attribute;
             $hooks[] = [
                 'callback' => $functionName,
                 'hook' => $hook
@@ -66,7 +75,7 @@ class HookResolver
 
         $hooks = [];
         foreach ($attributes as $methodName => $attribute) {
-            $hook = $attribute->newInstance();
+            $hook = $attribute instanceof \ReflectionAttribute ? $attribute->newInstance() : $attribute;
             $hooks[] = [
                 'callback' => $methodName,
                 'hook' => $hook
@@ -88,8 +97,17 @@ class HookResolver
         foreach ($this->functions as $function) {
             $refFunction = new \ReflectionFunction($function);
 
-            $actionAttributes = $refFunction->getAttributes(Action::class);
-            $filterAttributes = $refFunction->getAttributes(Filter::class);
+            $actionAttributes = [];
+            $filterAttributes = [];
+            if (\PHP_VERSION_ID >= 80000) {
+                $actionAttributes = $refFunction->getAttributes(Action::class);
+                $filterAttributes = $refFunction->getAttributes(Filter::class);
+            } elseif ($this->reader instanceof Reader) {
+                $actionAnnotation = $this->reader->getFunctionAnnotation($refFunction, ActionAnnotation::class);
+                $actionAttributes = $actionAnnotation !== null ? [$actionAnnotation] : [];
+                $filterAnnotation = $this->reader->getFunctionAnnotation($refFunction, FilterAnnotation::class);
+                $filterAttributes = $filterAnnotation !== null ? [$filterAnnotation] : [];
+            }
 
             if ($actionAttributes !== []) {
                 foreach ($actionAttributes as $actionAttribute) {
@@ -120,8 +138,17 @@ class HookResolver
             $refClass = new \ReflectionClass($class);
 
             foreach ($refClass->getMethods() as $method) {
-                $actionAttributes = $method->getAttributes(Action::class);
-                $filterAttributes = $method->getAttributes(Filter::class);
+                $actionAttributes = [];
+                $filterAttributes = [];
+                if (\PHP_VERSION_ID >= 80000) {
+                    $actionAttributes = $method->getAttributes(Action::class);
+                    $filterAttributes = $method->getAttributes(Filter::class);
+                } elseif ($this->reader instanceof Reader) {
+                    $actionAnnotation = $this->reader->getMethodAnnotation($method, ActionAnnotation::class);
+                    $actionAttributes = $actionAnnotation !== null ? [$actionAnnotation] : [];
+                    $filterAnnotation = $this->reader->getMethodAnnotation($method, FilterAnnotation::class);
+                    $filterAttributes = $filterAnnotation !== null ? [$filterAnnotation] : [];
+                }
 
                 if ($actionAttributes !== []) {
                     foreach ($actionAttributes as $actionAttribute) {

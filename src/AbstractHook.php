@@ -1,6 +1,6 @@
 <?php
 
-namespace BoxUk\WpHookAttributes\Attributes;
+namespace BoxUk\WpHookAttributes;
 
 abstract class AbstractHook
 {
