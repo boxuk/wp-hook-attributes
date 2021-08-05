@@ -18,10 +18,10 @@ class HookResolver
     private array $classes;
     private array $functions;
 
-    public function __construct(Reader $reader = null) {
+    public function __construct(Reader $reader = null, ?array $functions = null, ?array $classes = null) {
         $this->reader = $reader;
-        $this->functions = get_defined_functions()['user'];
-        $this->classes = get_declared_classes();
+        $this->functions = $functions ?? get_defined_functions()['user'];
+        $this->classes = $classes ?? get_declared_classes();
     }
 
     public function registerFunctionsFile(string $file): void {

@@ -1,6 +1,7 @@
 {
     "name": "boxuk/wp-hook-attributes",
-    "description": "A library to allow the use of PHP attributes for WordPress hooks",
+    "type": "wordpress-muplugin",
+    "description": "A mu-plugin to allow the use of PHP attributes for WordPress hooks",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -18,5 +19,10 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"
+    },
+    "config": {
+        "classmap-authoritative": true,
+        "sort-packages": true,
+        "preferred-install": "dist"
     }
 }

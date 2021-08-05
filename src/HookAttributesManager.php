@@ -13,7 +13,7 @@ final class HookAttributesManager
         $this->hookCaller = $hookCaller;
     }
 
-    public function init(): void
+    public function init(): self
     {
         $hooks = $this->hookResolver->resolveHooks();
         foreach($hooks as $hook) {
@@ -25,5 +25,12 @@ final class HookAttributesManager
                 $this->hookCaller->addFilter($hook['hook']->name, $hook['callback'], $hook['hook']->priority, $hook['hook']->args);
             }
         }
+
+        return $this;
+    }
+
+    public function getHookResolver(): HookResolver
+    {
+        return $this->hookResolver;
     }
 }

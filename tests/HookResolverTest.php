@@ -4,6 +4,7 @@ namespace BoxUk\WpHookAttributes\Tests;
 
 use BoxUk\WpHookAttributes\AbstractHook;
 use BoxUk\WpHookAttributes\HookResolver;
+use BoxUk\WpHookAttributes\HookResolverFactory;
 use BoxUk\WpHookAttributes\Tests\Resources\Example;
 use PHPUnit\Framework\TestCase;
 
@@ -52,8 +53,16 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_for_both_functions_and_classes(): void {
+    public function test_hooks_are_resolved_for_both_functions_and_classes_from_classmap(): void {
         $hooks = $this->hookResolver->resolveHooks();
+
+        self::assertCount(18, $hooks); // 6 functions declared in the functions files (required in test above) + 6 functions declared in the registered function file (required in test above) + 6 methods declared in the Example class (declared in test above)
+        self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
+    }
+
+    public function test_hooks_are_resolved_for_both_functions_and_classes_from_declared_classes(): void {
+        $hookResolver = self::createHookResolver(false);
+        $hooks = $hookResolver->resolveHooks();
 
         self::assertCount(24, $hooks); // 6 functions declared in the functions files (required in test above) + 6 functions declared in the registered function file (required in test above) + 6 methods declared in the Example class (declared in test above) + 6 methods declared in the ExampleWithNoNamespace class (declared in test above).
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));

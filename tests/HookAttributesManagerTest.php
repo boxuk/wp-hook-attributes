@@ -6,6 +6,7 @@ use BoxUk\WpHookAttributes\FakeHookCaller;
 use BoxUk\WpHookAttributes\HookAttributesManager;
 use BoxUk\WpHookAttributes\HookCallerInterface;
 use BoxUk\WpHookAttributes\HookResolver;
+use BoxUk\WpHookAttributes\HookResolverFactory;
 use BoxUk\WpHookAttributes\Tests\Resources\Example;
 use PHPUnit\Framework\TestCase;
 

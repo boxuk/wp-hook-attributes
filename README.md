@@ -6,13 +6,7 @@
 
 ## Usage
 
-Somewhere late in your WordPress bootstrap (mu-plugin like `zzz-plugin.php` works quite well) put the following:
-
-```php
-use BoxUk\WpHookAttributes\WordPressHookAttributes;
-
-( new WordPressHookAttributes() )()
-```
+If you are using composer for autoloading it will use the classmap 
 
 Now you can annotate functions and methods with attributes to attach them to a hook.
 
