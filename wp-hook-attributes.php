@@ -17,7 +17,6 @@ if( ! class_exists( WordPressHookAttributes::class ) ){
     require __DIR__ . '/vendor/autoload.php';
 }
 
-AnnotationReader::addGlobalIgnoredName('dataprovider'); // Needed to stop phpunit errors (case sensitivity issue).
 AnnotationReader::addGlobalIgnoredName('type'); // WordPress uses @type in some places.
 AnnotationReader::addGlobalIgnoredName('when'); // WordPress CLI uses @when in some places.
 AnnotationReader::addGlobalIgnoredName('When'); // WordPress CLI uses @When in some places.
