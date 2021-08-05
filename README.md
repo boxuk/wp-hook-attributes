@@ -1,5 +1,7 @@
 # WordPress Hook Attributes
 
+> **This library should be considered experimental and not production ready.**
+
 ## Installation
 
 `composer require boxuk/wp-hook-attributes`
@@ -33,7 +35,9 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 }
 ```
 
-Not on PHP8 yet? You can also use annotations:
+Not on PHP8 yet? You can also use annotations (**not recommended**):
+
+> Note: It will be _really_ slow - caching hasn't been added yet. Unfortunately the built in CachedReader doesn't support function annotations.
 
 ```php
 use BoxUk\WpHookAttributes\Annotations\Action;
@@ -68,17 +72,11 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 
 ## Registering files and classes
 
-Currently only works with defined functions and declared classes. Which is why it needs to appear late in the bootstrap process. What would be better and hopefully will be added soon, is to grab autoload data from composer and register from there. In the mean time files and classes can be manually registered like this:
+Currently only works with defined functions and declared classes. Composer classmap support is being looked at. For now though you can register files and classes manually if you need:
 
 ```php
 use BoxUk\WpHookAttributes\WordPressHookAttributes;
-use BoxUk\WpHookAttributes\HookResolver;
-use BoxUk\WpHookAttributes\WordPressHookCaller;
 
-$hookResolver = new HookResolver();
-$hookResolver->registerFunctionsFile('path/to/file/with/functions/in.php');
-$hookResolver->registerClass('NameOfClass');
-
-$hookAttributesManager = new HookAttributesManager($hookResolver, new WordPressHookCaller());
-$hookAttributesManager->init();
+(new WordPressHookAttributes())()->getHookResolver()->registerFunctionsFile('/path/to/functions.php');
+(new WordPressHookAttributes())()->getHookResolver()->registerClass('ClassName');
 ```

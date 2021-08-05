@@ -2,14 +2,31 @@
 
 namespace BoxUk\WpHookAttributes;
 
-class WordPressHookAttributes
+/**
+ * Convenience class to invoke everything we need in a single call.
+ * Will return an instance (the same instance) of HookAttributeManager
+ *
+ * Usage: (new WordPressHookAttributes())();
+ */
+final class WordPressHookAttributes
 {
     use HookResolverFactory;
+    use HookCallerFactory;
 
-    public function __invoke(bool $useComposerClassmap = true): HookAttributesManager
+    private static $instance;
+
+    public function __invoke(bool $useComposerClassmap = false, bool $useFakeHookCaller = false): HookAttributesManager
     {
+        if (self::$instance instanceof HookAttributesManager) {
+            return self::$instance;
+        }
+
         $hookResolver = self::createHookResolver($useComposerClassmap);
-        $hookAttributesManager = new HookAttributesManager($hookResolver, new WordPressHookCaller());
-        return $hookAttributesManager->init();
+        $hookCaller = self::createHookCaller($useFakeHookCaller);
+
+        $hookAttributesManager = new HookAttributesManager($hookResolver, $hookCaller);
+        self::$instance = $hookAttributesManager->init();
+
+        return self::$instance;
     }
 }

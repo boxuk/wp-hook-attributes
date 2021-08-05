@@ -7,13 +7,13 @@ use Doctrine\Common\Annotations\AnnotationReader;
 
 trait HookResolverFactory
 {
-    public static function createHookResolver( bool $useComposerClassmap = true): HookResolver
+    public static function createHookResolver( bool $useComposerClassmap = false): HookResolver
     {
         $classes = $useComposerClassmap ? self::getClassesInComposerClassMaps() : null;
         if (\PHP_VERSION_ID >= 80000) {
             return new HookResolver(null, null, $classes);
         }
-        AnnotationReader::addGlobalIgnoredName('dataprovider'); // Needed to stop phpunit errors (case sensitivity issue).
+
         return new HookResolver( new AnnotationReader(), null, $classes );
     }
 

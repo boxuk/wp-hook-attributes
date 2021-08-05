@@ -2,6 +2,9 @@
 
 namespace BoxUk\WpHookAttributes;
 
+/**
+ * Co-ordinates the resolving of hooks from class methods/functions and calls the necessary hooks.
+ */
 final class HookAttributesManager
 {
     private HookResolver $hookResolver;
