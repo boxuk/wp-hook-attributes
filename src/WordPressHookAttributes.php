@@ -15,7 +15,7 @@ final class WordPressHookAttributes
     use HookResolverFactory;
     use HookCallerFactory;
 
-    private static HookAttributesManager $instance;
+    private static $instance;
 
     public function __invoke(bool $useComposerClassmap = false, bool $useFakeHookCaller = false): HookAttributesManager
     {
