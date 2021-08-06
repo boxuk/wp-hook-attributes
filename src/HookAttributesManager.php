@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BoxUk\WpHookAttributes;
+
+use BoxUk\WpHookAttributes\Hook\ActionInterface;
+use BoxUk\WpHookAttributes\Hook\FilterInterface;
 
 /**
  * Co-ordinates the resolving of hooks from class methods/functions and calls the necessary hooks.
@@ -19,7 +24,7 @@ final class HookAttributesManager
     public function init(): self
     {
         $hooks = $this->hookResolver->resolveHooks();
-        foreach($hooks as $hook) {
+        foreach ($hooks as $hook) {
             if ($hook['hook'] instanceof ActionInterface) {
                 $this->hookCaller->addAction($hook['hook']->name, $hook['callback'], $hook['hook']->priority, $hook['hook']->args);
             }

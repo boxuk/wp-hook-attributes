@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BoxUk\WpHookAttributes;
 
 /**
@@ -13,7 +15,7 @@ final class WordPressHookAttributes
     use HookResolverFactory;
     use HookCallerFactory;
 
-    private static $instance;
+    private static HookAttributesManager $instance;
 
     public function __invoke(bool $useComposerClassmap = false, bool $useFakeHookCaller = false): HookAttributesManager
     {

@@ -2,10 +2,10 @@
 
 namespace BoxUk\WpHookAttributes\Tests\Resources;
 
-use BoxUk\WpHookAttributes\Attributes\Action;
-use BoxUk\WpHookAttributes\Attributes\Filter;
-use BoxUk\WpHookAttributes\Annotations\Action as ActionAnnotation;
-use BoxUk\WpHookAttributes\Annotations\Filter as FilterAnnotation;
+use BoxUk\WpHookAttributes\Hook\Attributes\Action;
+use BoxUk\WpHookAttributes\Hook\Attributes\Filter;
+use BoxUk\WpHookAttributes\Hook\Annotations\Action as ActionAnnotation;
+use BoxUk\WpHookAttributes\Hook\Annotations\Filter as FilterAnnotation;
 
 /**
  * @ActionAnnotation("init")

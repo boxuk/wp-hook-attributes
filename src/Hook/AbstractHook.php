@@ -1,12 +1,14 @@
 <?php
 
-namespace BoxUk\WpHookAttributes;
+declare(strict_types=1);
+
+namespace BoxUk\WpHookAttributes\Hook;
 
 abstract class AbstractHook
 {
     public string $name;
-    public string $priority;
-    public string $args;
+    public int $priority;
+    public int $args;
 
     public function __construct(string $name, int $priority = 10, int $args = 1)
     {

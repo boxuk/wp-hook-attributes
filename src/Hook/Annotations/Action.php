@@ -1,9 +1,9 @@
 <?php
 
-namespace BoxUk\WpHookAttributes\Annotations;
+namespace BoxUk\WpHookAttributes\Hook\Annotations;
 
-use BoxUk\WpHookAttributes\AbstractHook;
-use BoxUk\WpHookAttributes\ActionInterface;
+use BoxUk\WpHookAttributes\Hook\AbstractHook;
+use BoxUk\WpHookAttributes\Hook\ActionInterface;
 use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
 
 /**

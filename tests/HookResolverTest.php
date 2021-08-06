@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace BoxUk\WpHookAttributes\Tests;
 
-use BoxUk\WpHookAttributes\AbstractHook;
+use BoxUk\WpHookAttributes\Hook\AbstractHook;
 use BoxUk\WpHookAttributes\HookResolver;
 use BoxUk\WpHookAttributes\HookResolverFactory;
 use BoxUk\WpHookAttributes\Tests\Resources\Example;
@@ -54,8 +56,6 @@ class HookResolverTest extends TestCase
     }
 
     public function test_hooks_are_resolved_for_both_functions_and_classes_from_classmap(): void {
-        self::markTestSkipped('Classmap loading not fully functioning');
-
         $hookResolver = self::createHookResolver(true);
         $hooks = $hookResolver->resolveHooks();
 

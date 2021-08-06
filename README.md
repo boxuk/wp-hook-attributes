@@ -13,8 +13,8 @@ If you are using composer for autoloading it will use the classmap
 Now you can annotate functions and methods with attributes to attach them to a hook.
 
 ```php
-use BoxUk\WpHookAttributes\Attributes\Action;
-use BoxUk\WpHookAttributes\Attributes\Filter;
+use BoxUk\WpHookAttributes\Hook\Attributes\Action;
+use BoxUk\WpHookAttributes\Hook\Attributes\Filter;
 
 // Example of using an action hook
 #[Action('init')]
@@ -40,8 +40,8 @@ Not on PHP8 yet? You can also use annotations (**not recommended**):
 > Note: It will be _really_ slow - caching hasn't been added yet. Unfortunately the built in CachedReader doesn't support function annotations.
 
 ```php
-use BoxUk\WpHookAttributes\Annotations\Action;
-use BoxUk\WpHookAttributes\Annotations\Filter;
+use BoxUk\WpHookAttributes\Hook\Annotations\Action;
+use BoxUk\WpHookAttributes\Hook\Annotations\Filter;
 
 // Example of using an action hook
 /**
