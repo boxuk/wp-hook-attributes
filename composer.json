@@ -24,5 +24,9 @@
         "classmap-authoritative": true,
         "sort-packages": true,
         "preferred-install": "dist"
+    },
+    "scripts": {
+        "php-cs-fixer:test": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff --dry-run",
+        "php-cs-fixer:fix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff"
     }
 }
