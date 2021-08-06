@@ -1,5 +1,7 @@
 # WordPress Hook Attributes
 
+[![Build Status](https://app.travis-ci.com/boxuk/wp-hook-attributes.svg?token=3rRfYiN6sMupp1z6RpzN&branch=main)](https://app.travis-ci.com/boxuk/wp-hook-attributes)
+
 > **This library should be considered experimental and not production ready.**
 
 ## Installation
