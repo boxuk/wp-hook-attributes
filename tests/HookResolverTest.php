@@ -21,7 +21,8 @@ class HookResolverTest extends TestCase
         $this->hookResolver = self::createHookResolver();
     }
 
-    public function test_hooks_are_resolved_on_registered_functions_file(): void {
+    public function test_hooks_are_resolved_on_registered_functions_file(): void
+    {
         $this->hookResolver->registerFunctionsFile(__DIR__ . '/Resources/functions.php');
         $hooks = $this->hookResolver->resolveFunctionHooks();
 
@@ -29,7 +30,8 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_on_required_functions_file(): void {
+    public function test_hooks_are_resolved_on_required_functions_file(): void
+    {
         require_once __DIR__ . '/Resources/functions-two.php';
         $hookResolver = self::createHookResolver();
         $hooks = $hookResolver->resolveFunctionHooks();
@@ -38,7 +40,8 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_on_autoloaded_class(): void {
+    public function test_hooks_are_resolved_on_autoloaded_class(): void
+    {
         $example = new Example();
         $hooks = $this->hookResolver->resolveClassHooks();
 
@@ -46,7 +49,8 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_on_registered_class(): void {
+    public function test_hooks_are_resolved_on_registered_class(): void
+    {
         require_once __DIR__ . '/Resources/ExampleWithNoNamespace.php';
         $this->hookResolver->registerClass('ExampleWithNoNamespace');
         $hooks = $this->hookResolver->resolveClassHooks();
@@ -55,7 +59,8 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_for_both_functions_and_classes_from_classmap(): void {
+    public function test_hooks_are_resolved_for_both_functions_and_classes_from_classmap(): void
+    {
         $hookResolver = self::createHookResolver(true);
         $hooks = $hookResolver->resolveHooks();
 
@@ -64,7 +69,8 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_for_both_functions_and_classes_from_declared_classes(): void {
+    public function test_hooks_are_resolved_for_both_functions_and_classes_from_declared_classes(): void
+    {
         $hooks = $this->hookResolver->resolveHooks();
 
         self::assertCount(24, $hooks); // 6 functions declared in the functions files (required in test above) + 6 functions declared in the registered function file (required in test above) + 6 methods declared in the Example class (declared in test above) + 6 methods declared in the ExampleWithNoNamespace class (declared in test above).

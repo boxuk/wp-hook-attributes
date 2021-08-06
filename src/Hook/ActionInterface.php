@@ -6,5 +6,4 @@ namespace BoxUk\WpHookAttributes\Hook;
 
 interface ActionInterface
 {
-
 }

@@ -11,5 +11,4 @@ use BoxUk\WpHookAttributes\Hook\FilterInterface;
 #[Attribute]
 class Filter extends AbstractHook implements FilterInterface
 {
-
 }

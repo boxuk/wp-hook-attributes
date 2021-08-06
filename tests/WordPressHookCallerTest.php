@@ -17,15 +17,17 @@ class WordPressHookCallerTest extends TestCase
         $this->wordPressHookCaller = new WordPressHookCaller();
     }
 
-    public function test_add_filter_throws_exception_when_function_does_not_exist(): void {
+    public function test_add_filter_throws_exception_when_function_does_not_exist(): void
+    {
         $this->expectException(WordPressFunctionDoesNotExistException::class);
 
-        $this->wordPressHookCaller->addFilter('the_content', fn() => null);
+        $this->wordPressHookCaller->addFilter('the_content', fn () => null);
     }
 
-    public function test_add_action_throws_exception_when_function_does_not_exist(): void {
+    public function test_add_action_throws_exception_when_function_does_not_exist(): void
+    {
         $this->expectException(WordPressFunctionDoesNotExistException::class);
 
-        $this->wordPressHookCaller->addAction('init', fn() => null);
+        $this->wordPressHookCaller->addAction('init', fn () => null);
     }
 }

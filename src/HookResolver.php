@@ -20,13 +20,15 @@ class HookResolver
     private array $classes;
     private array $functions;
 
-    public function __construct(Reader $reader = null, ?array $functions = null, ?array $classes = null) {
+    public function __construct(Reader $reader = null, ?array $functions = null, ?array $classes = null)
+    {
         $this->reader = $reader;
         $this->functions = $functions ?? get_defined_functions()['user'];
         $this->classes = $classes ?? get_declared_classes();
     }
 
-    public function registerFunctionsFile(string $file): void {
+    public function registerFunctionsFile(string $file): void
+    {
         $existingFunctions = $this->functions;
 
         if (!in_array($file, get_included_files(), true)) {
@@ -35,7 +37,7 @@ class HookResolver
         $newFunctions = array_values(array_diff(get_defined_functions()["user"], $existingFunctions));
 
         if ($newFunctions !== []) {
-            foreach($newFunctions as $newFunction) {
+            foreach ($newFunctions as $newFunction) {
                 if (!in_array($newFunction, $this->functions, true)) {
                     $this->functions[] = $newFunction;
                 }
@@ -43,17 +45,20 @@ class HookResolver
         }
     }
 
-    public function registerClass(string $class): void {
+    public function registerClass(string $class): void
+    {
         if (!in_array($class, $this->classes, true)) {
             $this->classes[] = $class;
         }
     }
 
-    public function resolveHooks(): array {
+    public function resolveHooks(): array
+    {
         return array_merge($this->resolveFunctionHooks(), $this->resolveClassHooks());
     }
 
-    public function resolveFunctionHooks(): array {
+    public function resolveFunctionHooks(): array
+    {
         $functionAttributes = $this->getFunctionAttributes();
 
         $attributes = $functionAttributes;
@@ -70,7 +75,8 @@ class HookResolver
         return $hooks;
     }
 
-    public function resolveClassHooks(): array {
+    public function resolveClassHooks(): array
+    {
         $classAttributes = $this->getClassAttributes();
 
         $attributes = $classAttributes;

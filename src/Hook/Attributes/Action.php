@@ -11,5 +11,4 @@ use BoxUk\WpHookAttributes\Hook\ActionInterface;
 #[Attribute]
 class Action extends AbstractHook implements ActionInterface
 {
-
 }

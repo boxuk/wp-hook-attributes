@@ -13,5 +13,4 @@ use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
  */
 class Action extends AbstractHook implements ActionInterface
 {
-
 }

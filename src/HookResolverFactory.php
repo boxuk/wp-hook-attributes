@@ -9,14 +9,14 @@ use Doctrine\Common\Annotations\AnnotationReader;
 
 trait HookResolverFactory
 {
-    public static function createHookResolver( bool $useComposerClassmap = false): HookResolver
+    public static function createHookResolver(bool $useComposerClassmap = false): HookResolver
     {
         $classes = $useComposerClassmap ? self::getClassesInComposerClassMaps() : null;
         if (\PHP_VERSION_ID >= 80000) {
             return new HookResolver(null, null, $classes);
         }
 
-        return new HookResolver( new AnnotationReader(), null, $classes );
+        return new HookResolver(new AnnotationReader(), null, $classes);
     }
 
     private static function getClassesInComposerClassMaps(): array

@@ -3,14 +3,24 @@ language: php
 php:
     - 7.4
     - 8.0
-    - 8.1
+    - nightly
 
 matrix:
     allow_failures:
-        - php: 8.1
+        - php: nightly
+    fast_finish: true
 
-install:
-    - composer install --dev
+cache:
+    directories:
+        - $HOME/.composer/cache
+        - $HOME/.php-cs-fixer
+
+before_script:
+    - phpenv config-rm xdebug.ini
+    - composer self-update
+    - composer update --dev
+    - composer install --working-dir=tools/php-cs-fixer
 
 script:
+    - PHP_CS_FIXER_IGNORE_ENV=1 ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff --dry-run
     - vendor/bin/phpunit

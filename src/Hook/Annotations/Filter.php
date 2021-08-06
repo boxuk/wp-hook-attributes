@@ -13,5 +13,4 @@ use Doctrine\Common\Annotations\Annotation\NamedArgumentConstructor;
  */
 class Filter extends AbstractHook implements FilterInterface
 {
-
 }

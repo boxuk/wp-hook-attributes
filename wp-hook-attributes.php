@@ -15,7 +15,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
  */
 
 // autoloader.
-if( ! class_exists( WordPressHookAttributes::class ) ){
+if (! class_exists(WordPressHookAttributes::class)) {
     require __DIR__ . '/vendor/autoload.php';
 }
 
