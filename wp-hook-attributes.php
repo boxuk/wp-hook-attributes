@@ -26,5 +26,6 @@ AnnotationReader::addGlobalIgnoredName('Then'); // WordPress CLI uses @Then in s
 AnnotationReader::addGlobalIgnoredName('then'); // WordPress CLI uses @then in some places.
 AnnotationReader::addGlobalIgnoredName('Given'); // WordPress CLI uses @Given in some places.
 AnnotationReader::addGlobalIgnoredName('given'); // WordPress CLI uses @given in some places.
+AnnotationReader::addGlobalIgnoredName('blessed'); // WordPress uses @blessed in some places.
 
 (new WordPressHookAttributes())();
