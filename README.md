@@ -112,7 +112,9 @@ add_filter( 'wp_hook_attributes_registered_namespaces', function() {
 
 ## Registering files and classes
 
-Currently only works with defined functions and declared classes. For now though you can register files and classes manually if you need:
+Currently only works with defined functions and declared classes that are loaded after or during the `init` hook. This means any classes or functions declared before `init` will not work. 
+
+To get around this you can register function files or classes manually using the following hooks.
 
 ```php
 add_filter( 'wp_hook_attributes_registered_function_files', function() {

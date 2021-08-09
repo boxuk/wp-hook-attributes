@@ -40,4 +40,11 @@ foreach ($annotationIgnores as $annotationIgnore) {
     AnnotationReader::addGlobalIgnoredName($annotationIgnore);
 }
 
-(new WordPressHookAttributes())();
+// Run after all plugins and theme has loaded.
+add_action(
+    'init',
+    static function(): void {
+        (new WordPressHookAttributes())();
+    },
+    0 // Should be the first or one of the first thing that runs on init.
+);
