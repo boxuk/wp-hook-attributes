@@ -36,6 +36,16 @@ final class WordPressHookAttributes
             $hookResolver->registerNamespace($registeredNamespace);
         }
 
+        $registeredFunctionFiles = apply_filters('wp_hook_attributes_registered_function_files', []);
+        foreach ($registeredFunctionFiles as $registeredFunctionFile) {
+            $hookResolver->registerFunctionsFile($registeredFunctionFile);
+        }
+
+        $registeredClasses = apply_filters('wp_hook_attributes_registered_classes', []);
+        foreach ($registeredClasses as $registeredClass) {
+            $hookResolver->registerClass($registeredClass);
+        }
+
         $hookAttributesManager = new HookAttributesManager($hookResolver, new WordPressHookCaller());
         self::$instance = $hookAttributesManager->init();
 

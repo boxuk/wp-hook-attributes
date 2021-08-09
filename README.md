@@ -17,16 +17,19 @@ Basic array based caching is enabled as standard but you may wish to bring in a 
 ```php
 use Doctrine\Common\Annotations\Reader;
 use BoxUk\WpHookAttributes\PsrCachedAnnotationReader;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Cache\Adapter\Memcache\MemcacheCachePool;
+use Psr\Cache\CacheItemPoolInterface;
 
 add_filter(
 	'wp_hook_attributes_cache_adapter',
-	function(): AdapterInterface {
-		global $memcached_servers;
-		$client = new Memcache();
-        $client->connect('localhost', 11211);
-        return new MemcachePool();
+	function( CacheItemPoolInterface $cache_adapter ): CacheItemPoolInterface {
+		global $wp_object_cache;
+		if ( $wp_object_cache->get_mc( 'default' ) instanceof \Memcache ) {
+			$client = $wp_object_cache->get_mc( 'default' );
+			return new MemcacheCachePool( $client );
+		}
+		
+		return $cache_adapter;
 	}
 );
 ```
@@ -44,19 +47,19 @@ use BoxUk\WpHookAttributes\Hook\Attributes\Filter;
 // Example of using an action hook
 #[Action('init')]
 function basic_action(): string {
-    return 'something...';
+	return 'something...';
 }
 
 // Example of using a filter hook
 #[Filter('the_content')]
 function basic_filter(): string {
-    return 'something...';
+	return 'something...';
 }
 
 // You can also attach a priority and args
 #[Action('init', priority: 20, args: 4)]
 function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): string
-    return 'something...';
+	return 'something...';
 }
 ```
 
@@ -71,7 +74,7 @@ use BoxUk\WpHookAttributes\Hook\Annotations\Filter;
  * @Action("init")
  */
 function basic_action(): string {
-    return 'something...';
+	return 'something...';
 }
 
 // Example of using a filter hook
@@ -79,7 +82,7 @@ function basic_action(): string {
  * @Filter("the_content") 
  */
 function basic_filter(): string {
-    return 'something...';
+	return 'something...';
 }
 
 // You can also attach a priority and args
@@ -87,7 +90,7 @@ function basic_filter(): string {
  * @Action("init", priority="20", args="4")
  */
 function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): string
-    return 'something...';
+	return 'something...';
 }
 ```
 
@@ -99,9 +102,9 @@ You likely want to register a namespace to ensure it only looks for attributes/a
 
 ```php
 add_filter( 'wp_hook_attributes_registered_namespaces', function() {
-    return [
-        'BoxUk\Mu\Plugins',
-    ];
+	return [
+		'BoxUk\Mu\Plugins',
+	];
 });
 ```
 
@@ -112,10 +115,17 @@ add_filter( 'wp_hook_attributes_registered_namespaces', function() {
 Currently only works with defined functions and declared classes. For now though you can register files and classes manually if you need:
 
 ```php
-use BoxUk\WpHookAttributes\WordPressHookAttributes;
+add_filter( 'wp_hook_attributes_registered_function_files', function() {
+	return [
+		'path/to/my/file/with/functions.php',
+	];
+});
 
-(new WordPressHookAttributes())()->getHookResolver()->registerFunctionsFile('/path/to/functions.php');
-(new WordPressHookAttributes())()->getHookResolver()->registerClass('ClassName');
+add_filter( 'wp_hook_attributes_registered_classes', function() {
+	return [
+		'Fqcn\Of\My\Class',
+	];
+});
 ```
 
 ## Ignoring existing annotation names
@@ -128,10 +138,10 @@ You can ignore any custom annotations you need to with the following hook:
 
 ```php
 add_filter( 
-    'wp_hook_attributes_annotation_ignores',
-    function( array $existing_ignores ): array {
-        $existing_ignores[] = 'my-custom-annotation';
-        return $existing_ignores;
-    }
+	'wp_hook_attributes_annotation_ignores',
+	function( array $existing_ignores ): array {
+		$existing_ignores[] = 'my-custom-annotation';
+		return $existing_ignores;
+	}
 );
 ```
