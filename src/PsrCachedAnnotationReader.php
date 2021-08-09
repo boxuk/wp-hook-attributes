@@ -193,7 +193,7 @@ final class PsrCachedAnnotationReader implements Reader
      */
     private function fetchFromCache(
         string $cacheKey,
-        /**ReflectionClass|ReflectionFunction*/ 
+        /*ReflectionClass|ReflectionFunction*/
         $reflection,
         string $method,
         Reflector $reflector
@@ -280,12 +280,14 @@ final class PsrCachedAnnotationReader implements Reader
             return $this->loadedFilemtimes[$fileName];
         }
 
-        $lastModificationTime = max(array_merge(
-            [$fileName ? filemtime($fileName) : 0],
-            array_map(function (ReflectionClass $reflectionTrait): int {
-                                            return $this->getTraitLastModificationTime($reflectionTrait);
-                                        }, $reflectionTrait->getTraits())
-        ));
+        $lastModificationTime = max(
+            array_merge(
+                [$fileName ? filemtime($fileName) : 0],
+                array_map(function (ReflectionClass $reflectionTrait): int {
+                    return $this->getTraitLastModificationTime($reflectionTrait);
+                }, $reflectionTrait->getTraits())
+            )
+        );
 
         assert($lastModificationTime !== false);
 
