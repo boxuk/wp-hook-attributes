@@ -6,9 +6,9 @@ use BoxUk\WpHookAttributes\Hook\AbstractHook;
 use BoxUk\WpHookAttributes\HookResolver;
 use BoxUk\WpHookAttributes\PsrCachedAnnotationReader;
 use BoxUk\WpHookAttributes\Tests\Resources\Sub\Example;
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use Doctrine\Common\Annotations\AnnotationReader;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 class PsrCachedAnnotationReaderTest extends TestCase
 {
@@ -23,7 +23,7 @@ class PsrCachedAnnotationReaderTest extends TestCase
     {
         $annotationReaderMock = $this->createMock(AnnotationReader::class);
 
-        $cache = new ArrayAdapter();
+        $cache = new ArrayCachePool();
         $annotationReader = new PsrCachedAnnotationReader($annotationReaderMock, $cache);
         $hookResolver = new HookResolver($annotationReader);
         $hookResolver->registerNamespace('BoxUk\WpHookAttributes\Tests\Resources\Sub');
@@ -44,7 +44,7 @@ class PsrCachedAnnotationReaderTest extends TestCase
     {
         $annotationReaderMock = $this->createMock(AnnotationReader::class);
 
-        $cache = new ArrayAdapter();
+        $cache = new ArrayCachePool();
         $annotationReader = new PsrCachedAnnotationReader($annotationReaderMock, $cache);
         $hookResolver = new HookResolver($annotationReader);
         $hookResolver->registerNamespace('BoxUk\WpHookAttributes\Tests\Resources\Sub');

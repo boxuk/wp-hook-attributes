@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace BoxUk\WpHookAttributes;
 
+use Cache\Adapter\PHPArray\ArrayCachePool;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Convenience class to invoke everything we need in a single call.
@@ -26,7 +26,7 @@ final class WordPressHookAttributes
         if (\PHP_VERSION_ID >= 80000) {
             $hookResolver = new HookResolver();
         } else {
-            $cacheAdapter = apply_filters('wp_hook_attributes_cache_adapter', new ArrayAdapter());
+            $cacheAdapter = apply_filters('wp_hook_attributes_cache_adapter', new ArrayCachePool());
             $annotationReader = new PsrCachedAnnotationReader(new AnnotationReader(), $cacheAdapter);
             $hookResolver = new HookResolver($annotationReader);
         }

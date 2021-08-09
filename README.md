@@ -10,39 +10,28 @@
 
 ### Enable caching
 
-`composer require symfony/cache`
+Basic array based caching is enabled as standard but you may wish to bring in a more optimal adapter. Below is an example using memacache, but any PSR-6 adapter is supported.
 
-> If you're on PHP 7.4 you will likely need to set the psr/cache version to version 1 also: `composer require psr/cache:^1.0` should do that for you.
-
-_Strongly_ recommended if using annotations. Below is an example using memcached but you can use any supported adapter from https://symfony.com/doc/current/components/cache.html#available-cache-adapters or any PSR-6 compatible cache adapter.
+`composer require cache/memcache-adapter`
 
 ```php
 use Doctrine\Common\Annotations\Reader;
 use BoxUk\WpHookAttributes\PsrCachedAnnotationReader;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\Adapter\MemcachedAdapter;
 
-add_filter( 
-	'wp_hook_attributes_annoation_reader',
-	function( Reader $annotation_reader ): Reader {
+add_filter(
+	'wp_hook_attributes_cache_adapter',
+	function(): AdapterInterface {
 		global $memcached_servers;
-		return new PsrCachedAnnotationReader(
-			$annotation_reader,
-			new MemcachedAdapter(
-				MemcachedAdapter::createConnection(
-					array_filter(
-						$memcached_servers['default'] ?? [],
-						static function( string $server ): string {
-							return 'memcached://' . $server;
-						}
-					)
-				)
-			)
-		);
+		$client = new Memcache();
+        $client->connect('localhost', 11211);
+        return new MemcachePool();
 	}
 );
 ```
 
-> Unfortunately this is the one filter you'll need to use the function rather than an annotation for.
+> Unfortunately this is one of the few filters you'll need to use the function rather than an annotation for.
 
 ## Usage
 
@@ -114,12 +103,6 @@ add_filter( 'wp_hook_attributes_registered_namespaces', function() {
         'BoxUk\Mu\Plugins',
     ];
 });
-```
-
-Or, if you'd prefer:
-
-```php
-(new WordPressHookAttributes())()->getHookResolver()->registerNamespace('BoxUk\Mu\Plugins');
 ```
 
 > It does a `stripos()` comparison, so you can just put the first part of the namespace.
