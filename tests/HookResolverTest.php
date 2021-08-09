@@ -6,7 +6,6 @@ namespace BoxUk\WpHookAttributes\Tests;
 
 use BoxUk\WpHookAttributes\Hook\AbstractHook;
 use BoxUk\WpHookAttributes\HookResolver;
-use BoxUk\WpHookAttributes\HookResolverFactory;
 use BoxUk\WpHookAttributes\Tests\Resources\Example;
 use PHPUnit\Framework\TestCase;
 
@@ -40,6 +39,17 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
+    public function test_functions_can_be_filtered_by_namespace(): void
+    {
+        $hookResolver = self::createHookResolver();
+        $hookResolver->registerNamespace('BoxUk\WpHookAttributes\Tests\Resources\Sub');
+        $hookResolver->registerFunctionsFile(__DIR__ . '/Resources/Sub/functions.php');
+        $hooks = $hookResolver->resolveFunctionHooks();
+
+        self::assertCount(6, $hooks); // 6 functions declared in the required functions file.
+        self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
+    }
+
     public function test_hooks_are_resolved_on_autoloaded_class(): void
     {
         $example = new Example();
@@ -59,21 +69,23 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_for_both_functions_and_classes_from_classmap(): void
+    public function test_classes_can_be_filtered_by_namespace(): void
     {
-        $hookResolver = self::createHookResolver(true);
-        $hooks = $hookResolver->resolveHooks();
+        $hookResolver = self::createHookResolver();
+        $hookResolver->registerNamespace('BoxUk\WpHookAttributes\Tests\Resources\Sub');
+        $hookResolver->registerClass(\BoxUk\WpHookAttributes\Tests\Resources\Example::class);
+        $hookResolver->registerClass(\BoxUk\WpHookAttributes\Tests\Resources\Sub\Example::class);
+        $hooks = $hookResolver->resolveClassHooks();
 
-
-        self::assertCount(18, $hooks); // 6 functions declared in the functions files (required in test above) + 6 functions declared in the registered function file (required in test above) + 6 methods declared in the Example class (declared in test above)
+        self::assertCount(6, $hooks); // 6 functions declared in the Sub Example class.
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_hooks_are_resolved_for_both_functions_and_classes_from_declared_classes(): void
+    public function test_hooks_are_resolved_for_both_functions_and_classes(): void
     {
         $hooks = $this->hookResolver->resolveHooks();
 
-        self::assertCount(24, $hooks); // 6 functions declared in the functions files (required in test above) + 6 functions declared in the registered function file (required in test above) + 6 methods declared in the Example class (declared in test above) + 6 methods declared in the ExampleWithNoNamespace class (declared in test above).
+        self::assertCount(36, $hooks); // This number is made up of all declared functions and methods, will need to be updated upon addition of a new fixture file.
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 }

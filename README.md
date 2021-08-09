@@ -8,9 +8,43 @@
 
 `composer require boxuk/wp-hook-attributes`
 
-## Usage
+### Enable caching
 
-If you are using composer for autoloading it will use the classmap 
+`composer require symfony/cache`
+
+> If you're on PHP 7.4 you will likely need to set the psr/cache version to version 1 also: `composer require psr/cache:^1.0` should do that for you.
+
+_Strongly_ recommended if using annotations. Below is an example using memcached but you can use any supported adapter from https://symfony.com/doc/current/components/cache.html#available-cache-adapters or any PSR-6 compatible cache adapter.
+
+```php
+use Doctrine\Common\Annotations\Reader;
+use BoxUk\WpHookAttributes\PsrCachedAnnotationReader;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+
+add_filter( 
+	'wp_hook_attributes_annoation_reader',
+	function( Reader $annotation_reader ): Reader {
+		global $memcached_servers;
+		return new PsrCachedAnnotationReader(
+			$annotation_reader,
+			new MemcachedAdapter(
+				MemcachedAdapter::createConnection(
+					array_filter(
+						$memcached_servers['default'] ?? [],
+						static function( string $server ): string {
+							return 'memcached://' . $server;
+						}
+					)
+				)
+			)
+		);
+	}
+);
+```
+
+> Unfortunately this is the one filter you'll need to use the function rather than an annotation for.
+
+## Usage
 
 Now you can annotate functions and methods with attributes to attach them to a hook.
 
@@ -38,8 +72,6 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 ```
 
 Not on PHP8 yet? You can also use annotations (**not recommended**):
-
-> Note: It will be _really_ slow - caching hasn't been added yet. Unfortunately the built in CachedReader doesn't support function annotations.
 
 ```php
 use BoxUk\WpHookAttributes\Hook\Annotations\Action;
@@ -72,13 +104,51 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 
 > Note: Anything lower than PHP 7.4 is not supported.
 
+## Registering a namespace
+
+You likely want to register a namespace to ensure it only looks for attributes/annotations for your code. You can do so via the following hook:
+
+```php
+add_filter( 'wp_hook_attributes_registered_namespaces', function() {
+    return [
+        'BoxUk\Mu\Plugins',
+    ];
+});
+```
+
+Or, if you'd prefer:
+
+```php
+(new WordPressHookAttributes())()->getHookResolver()->registerNamespace('BoxUk\Mu\Plugins');
+```
+
+> It does a `stripos()` comparison, so you can just put the first part of the namespace.
+
 ## Registering files and classes
 
-Currently only works with defined functions and declared classes. Composer classmap support is being looked at. For now though you can register files and classes manually if you need:
+Currently only works with defined functions and declared classes. For now though you can register files and classes manually if you need:
 
 ```php
 use BoxUk\WpHookAttributes\WordPressHookAttributes;
 
 (new WordPressHookAttributes())()->getHookResolver()->registerFunctionsFile('/path/to/functions.php');
 (new WordPressHookAttributes())()->getHookResolver()->registerClass('ClassName');
+```
+
+## Ignoring existing annotation names
+
+Sometimes you may get errors when using annotations that an existing annotation hasn't been imported. This is because sometimes you find not standard annotations or docblock parameters that we need to ignore. 
+
+Some common WordPress and related libraries are ignored by default but it won't cover everything.
+
+You can ignore any custom annotations you need to with the following hook:
+
+```php
+add_filter( 
+    'wp_hook_attributes_annotation_ignores',
+    function( array $existing_ignores ): array {
+        $existing_ignores[] = 'my-custom-annotation';
+        return $existing_ignores;
+    }
+);
 ```

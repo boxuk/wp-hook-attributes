@@ -19,12 +19,22 @@ class HookResolver
     private ?Reader $reader;
     private array $classes;
     private array $functions;
+    private array $namespaces;
 
     public function __construct(Reader $reader = null, ?array $functions = null, ?array $classes = null)
     {
         $this->reader = $reader;
         $this->functions = $functions ?? get_defined_functions()['user'];
         $this->classes = $classes ?? get_declared_classes();
+        $this->namespaces = [];
+    }
+
+    /**
+     * Register a namespace to filter all classes and functions to only ones within that namespace.
+     */
+    public function registerNamespace(string $namespace): void
+    {
+        $this->namespaces[] = $namespace;
     }
 
     public function registerFunctionsFile(string $file): void
@@ -34,6 +44,8 @@ class HookResolver
         if (!in_array($file, get_included_files(), true)) {
             require_once $file;
         }
+
+        // TODO: Parse the file and extract functions rather rely on this which breaks if a custom list of functions is passed anyway.
         $newFunctions = array_values(array_diff(get_defined_functions()["user"], $existingFunctions));
 
         if ($newFunctions !== []) {
@@ -102,7 +114,12 @@ class HookResolver
     private function getFunctionAttributes(): array
     {
         $attributes = [];
-        foreach ($this->functions as $function) {
+
+        $functions = $this->functions;
+        if ($this->namespaces !== []) {
+            $functions = $this->filterByNamespaces($functions, $this->namespaces);
+        }
+        foreach ($functions as $function) {
             $refFunction = new \ReflectionFunction($function);
 
             $actionAttributes = [];
@@ -142,7 +159,12 @@ class HookResolver
     private function getClassAttributes(): array
     {
         $attributes = [];
-        foreach ($this->classes as $class) {
+
+        $classes = $this->classes;
+        if ($this->namespaces !== []) {
+            $classes = $this->filterByNamespaces($classes, $this->namespaces);
+        }
+        foreach ($classes as $class) {
             $refClass = new \ReflectionClass($class);
 
             foreach ($refClass->getMethods() as $method) {
@@ -173,5 +195,15 @@ class HookResolver
         }
 
         return $attributes;
+    }
+
+    private function filterByNamespaces(array $functionsOrClasses, array $namespaces) {
+        $return = [];
+        foreach ($namespaces as $namespace) {
+            $return[] = array_filter($functionsOrClasses, fn(string $key) => stripos($key, $namespace) !== false);
+        }
+
+        // Flatten the array.
+        return array_merge([], ...$return);
     }
 }

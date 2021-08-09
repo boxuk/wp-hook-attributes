@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use BoxUk\WpHookAttributes\HookAttributesManager;
 use BoxUk\WpHookAttributes\WordPressHookAttributes;
 use Doctrine\Common\Annotations\AnnotationReader;
 
@@ -15,18 +16,27 @@ use Doctrine\Common\Annotations\AnnotationReader;
  */
 
 // autoloader.
-if (! class_exists(WordPressHookAttributes::class)) {
+if (! class_exists(HookAttributesManager::class)) {
     require __DIR__ . '/vendor/autoload.php';
 }
 
-AnnotationReader::addGlobalIgnoredName('type'); // WordPress uses @type in some places.
-AnnotationReader::addGlobalIgnoredName('when'); // WordPress CLI uses @when in some places.
-AnnotationReader::addGlobalIgnoredName('When'); // WordPress CLI uses @When in some places.
-AnnotationReader::addGlobalIgnoredName('Then'); // WordPress CLI uses @Then in some places.
-AnnotationReader::addGlobalIgnoredName('then'); // WordPress CLI uses @then in some places.
-AnnotationReader::addGlobalIgnoredName('Given'); // WordPress CLI uses @Given in some places.
-AnnotationReader::addGlobalIgnoredName('given'); // WordPress CLI uses @given in some places.
-AnnotationReader::addGlobalIgnoredName('blessed'); // WordPress uses @blessed in some places.
-AnnotationReader::addGlobalIgnoredName('jarednova'); // Timber uses @jarednova in some places.
+$annotationIgnores = apply_filters('wp_hook_attributes_annotation_ignores', [
+    // WordPress.
+    'type',
+    'blessed',
+    // WP CLI.
+    'when',
+    'When',
+    'then',
+    'Then',
+    'given',
+    'Given',
+    // Timber
+    'jarednova',
+]);
+
+foreach( $annotationIgnores as $annotationIgnore) {
+    AnnotationReader::addGlobalIgnoredName($annotationIgnore);
+}
 
 (new WordPressHookAttributes())();

@@ -8,7 +8,6 @@ use BoxUk\WpHookAttributes\FakeHookCaller;
 use BoxUk\WpHookAttributes\HookAttributesManager;
 use BoxUk\WpHookAttributes\HookCallerInterface;
 use BoxUk\WpHookAttributes\HookResolver;
-use BoxUk\WpHookAttributes\HookResolverFactory;
 use BoxUk\WpHookAttributes\Tests\Resources\Example;
 use PHPUnit\Framework\TestCase;
 
@@ -83,5 +82,10 @@ class HookAttributesManagerTest extends TestCase
         $this->hookResolver->registerClass(Example::class);
         $this->hookAttributesManager->init();
         self::assertEquals($expectedActions, $this->hookCaller->getCalledActions());
+    }
+
+    public function test_current_hook_resolver_is_returned(): void {
+        $manager = $this->hookAttributesManager->init();
+        self::assertSame($this->hookResolver, $manager->getHookResolver());
     }
 }
