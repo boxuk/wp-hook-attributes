@@ -33,6 +33,7 @@ $annotationIgnores = apply_filters('wp_hook_attributes_annotation_ignores', [
     'Given',
     // Timber
     'jarednova',
+    'date',
 ]);
 
 foreach ($annotationIgnores as $annotationIgnore) {
