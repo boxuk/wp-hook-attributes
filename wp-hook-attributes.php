@@ -35,7 +35,7 @@ $annotationIgnores = apply_filters('wp_hook_attributes_annotation_ignores', [
     'jarednova',
 ]);
 
-foreach( $annotationIgnores as $annotationIgnore) {
+foreach ($annotationIgnores as $annotationIgnore) {
     AnnotationReader::addGlobalIgnoredName($annotationIgnore);
 }
 

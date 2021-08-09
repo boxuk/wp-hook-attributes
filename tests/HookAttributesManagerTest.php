@@ -84,7 +84,8 @@ class HookAttributesManagerTest extends TestCase
         self::assertEquals($expectedActions, $this->hookCaller->getCalledActions());
     }
 
-    public function test_current_hook_resolver_is_returned(): void {
+    public function test_current_hook_resolver_is_returned(): void
+    {
         $manager = $this->hookAttributesManager->init();
         self::assertSame($this->hookResolver, $manager->getHookResolver());
     }

@@ -197,10 +197,11 @@ class HookResolver
         return $attributes;
     }
 
-    private function filterByNamespaces(array $functionsOrClasses, array $namespaces) {
+    private function filterByNamespaces(array $functionsOrClasses, array $namespaces)
+    {
         $return = [];
         foreach ($namespaces as $namespace) {
-            $return[] = array_filter($functionsOrClasses, fn(string $key) => stripos($key, $namespace) !== false);
+            $return[] = array_filter($functionsOrClasses, fn (string $key) => stripos($key, $namespace) !== false);
         }
 
         // Flatten the array.

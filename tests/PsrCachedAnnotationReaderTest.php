@@ -19,7 +19,8 @@ class PsrCachedAnnotationReaderTest extends TestCase
         }
     }
 
-    public function test_functions_annotations_are_cached(): void {
+    public function test_functions_annotations_are_cached(): void
+    {
         $annotationReaderMock = $this->createMock(AnnotationReader::class);
 
         $cache = new ArrayAdapter();
@@ -39,7 +40,8 @@ class PsrCachedAnnotationReaderTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
-    public function test_class_annotations_are_cached(): void {
+    public function test_class_annotations_are_cached(): void
+    {
         $annotationReaderMock = $this->createMock(AnnotationReader::class);
 
         $cache = new ArrayAdapter();
