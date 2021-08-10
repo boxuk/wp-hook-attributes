@@ -10,7 +10,7 @@
 
 ### Enable caching
 
-Basic array based caching is enabled as standard but you may wish to bring in a more optimal adapter. Below is an example using memacache, but any PSR-6 adapter is supported.
+Basic array based caching is enabled as standard but in production you may wish to bring in a more optimal adapter. Below is an example using memacache, but any PSR-6 adapter is supported.
 
 `composer require cache/memcache-adapter`
 
@@ -20,18 +20,21 @@ use BoxUk\WpHookAttributes\PsrCachedAnnotationReader;
 use Cache\Adapter\Memcache\MemcacheCachePool;
 use Psr\Cache\CacheItemPoolInterface;
 
-add_filter(
-	'wp_hook_attributes_cache_adapter',
-	function( CacheItemPoolInterface $cache_adapter ): CacheItemPoolInterface {
-		global $wp_object_cache;
-		if ( $wp_object_cache->get_mc( 'default' ) instanceof \Memcache ) {
-			$client = $wp_object_cache->get_mc( 'default' );
-			return new MemcacheCachePool( $client );
+if ( wp_get_environment_type() === 'production' ) {
+	add_filter(
+		'wp_hook_attributes_cache_adapter',
+		function (CacheItemPoolInterface $cache_adapter): CacheItemPoolInterface {
+			global $wp_object_cache;
+			if ($wp_object_cache->get_mc('default') instanceof \Memcache) {
+				$client = $wp_object_cache->get_mc('default');
+
+				return new MemcacheCachePool($client);
+			}
+
+			return $cache_adapter;
 		}
-		
-		return $cache_adapter;
-	}
-);
+	);
+}
 ```
 
 > Unfortunately this is one of the few filters you'll need to use the function rather than an annotation for.
