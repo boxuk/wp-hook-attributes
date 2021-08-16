@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 $finder = PhpCsFixer\Finder::create()
-                           ->exclude(['tools', 'vendor'])
+                           ->exclude(['tools', 'vendor', 'wp'])
                            ->in(__DIR__);
 
 $config = new PhpCsFixer\Config();

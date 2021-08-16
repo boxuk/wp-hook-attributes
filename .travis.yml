@@ -23,4 +23,4 @@ before_script:
 
 script:
     - PHP_CS_FIXER_IGNORE_ENV=1 ./tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff --dry-run
-    - vendor/bin/phpunit
+    - composer test:unit
