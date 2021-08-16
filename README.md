@@ -8,7 +8,7 @@
 
 `composer require boxuk/wp-hook-attributes`
 
-### Enable caching
+### Enable caching (optional, recommended for production)
 
 Basic array based caching is enabled as standard but in production you may wish to bring in a more optimal adapter. Below is an example using memacache, but any PSR-6 adapter is supported.
 
@@ -36,8 +36,6 @@ if ( wp_get_environment_type() === 'production' ) {
 	);
 }
 ```
-
-> Unfortunately this is one of the few filters you'll need to use the function rather than an annotation for.
 
 ## Usage
 
@@ -150,3 +148,61 @@ add_filter(
 	}
 );
 ```
+
+## Limitations
+
+### Functions/methods must be registered before the `init` hook
+
+Attributes should work for any function/method registered before the `init` hook is called. Any function/method that is registered as part of an `mu-plugin` or a `theme` should work as the hooks to load these are called prior to `init`.
+
+What won't work is any function/method that is registered after the `init` hook, for example the following won't work because `wp_loadded` is called after `init` and thus the functions within `my-functions.php` won't be registered in time:
+
+```php
+// This will not work.
+add_action( 'wp_loaded', function() {
+    require_once 'my-functions.php';
+});
+```
+
+You can register files manually, but again, this must be done before `init`, so to fix the above you can do:
+
+```php
+add_action( 'muplugins-loaded', function() {
+    add_filter( 'wp_hook_attributes_registered_function_files', function() {
+        return [
+            'my-functions.php';
+        ];
+    });
+});
+```
+
+Similarly, simply requiring it will work also:
+
+```php
+add_action( 'muplugins-loaded', function() {
+    require_once 'my-functions.php';
+});
+```
+
+### Attributes on hooks prior to `init` are not supported
+
+If you wish to use hooks prior to the `init` hook, for example `muplugins_loaded` you will not be able to use attributes for these, as they would have already been called by the point the hook resolver is called.
+
+The main hooks that this applies to is (but not limited to):
+
+```
+muplugins_loaded
+registered_taxonomy
+registered_post_type
+plugins_loaded
+sanitize_comment_cookies
+setup_theme
+unload_textdomain
+load_textdomain
+after_setup_theme
+auth_cookie_malformed
+auth_cookie_valid
+set_current_user
+```
+
+> Source: http://rachievee.com/the-wordpress-hooks-firing-sequence/
