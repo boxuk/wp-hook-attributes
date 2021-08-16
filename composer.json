@@ -16,10 +16,14 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "cache/array-adapter": "^1.1",
-        "doctrine/annotations": "^1.13"
+        "doctrine/annotations": "^1.13",
+        "roots/wordpress": "^5.8"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^7 || ^9",
+        "symfony/dotenv": "^5.3",
+        "wp-phpunit/wp-phpunit": "^5.8",
+        "yoast/phpunit-polyfills": "^1.0"
     },
     "config": {
         "classmap-authoritative": true,
@@ -27,7 +31,13 @@
         "preferred-install": "dist"
     },
     "scripts": {
+        "test:unit": "vendor/bin/phpunit --testsuite unit",
+        "test:coverage": "php -dxdebug.mode=coverage bin/phpunit --coverage-clover='./clover.xml'",
+        "test:integration": "vendor/bin/phpunit --testsuite integration",
         "php-cs-fixer:test": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff --dry-run",
         "php-cs-fixer:fix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix -v --diff"
+    },
+    "extra": {
+        "wordpress-install-dir": "tests/integration/wp"
     }
 }

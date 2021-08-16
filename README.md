@@ -99,7 +99,7 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 
 > Note: Anything lower than PHP 7.4 is not supported.
 
-## Registering a namespace
+## Registering a namespace (highly recommended)
 
 You likely want to register a namespace to ensure it only looks for attributes/annotations for your code. You can do so via the following hook:
 
@@ -115,7 +115,7 @@ add_filter( 'wp_hook_attributes_registered_namespaces', function() {
 
 ## Registering files and classes
 
-Currently only works with defined functions and declared classes that are loaded after or during the `init` hook. This means any classes or functions declared before `init` will not work. 
+Currently only works with defined functions and declared classes that are registered before `init` hook. If you have a functions file or class that is registered (required) after this point, you can register manually.
 
 To get around this you can register function files or classes manually using the following hooks.
 
