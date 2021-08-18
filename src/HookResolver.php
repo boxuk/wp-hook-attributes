@@ -20,6 +20,7 @@ class HookResolver
     private array $classes;
     private array $functions;
     private array $namespaces;
+    private array $prefixes;
 
     public function __construct(Reader $reader = null, ?array $functions = null, ?array $classes = null)
     {
@@ -27,6 +28,7 @@ class HookResolver
         $this->functions = $functions ?? get_defined_functions()['user'];
         $this->classes = $classes ?? get_declared_classes();
         $this->namespaces = [];
+        $this->prefixes = [];
     }
 
     /**
@@ -35,6 +37,14 @@ class HookResolver
     public function registerNamespace(string $namespace): void
     {
         $this->namespaces[] = $namespace;
+    }
+
+    /**
+     * Register a prefix to filter all classes and functions to only ones with this prefixed.
+     */
+    public function registerPrefix(string $prefix): void
+    {
+        $this->prefixes[] = $prefix;
     }
 
     public function registerFunctionsFile(string $file): void
@@ -131,6 +141,10 @@ class HookResolver
         if ($this->namespaces !== []) {
             $functions = $this->filterByNamespaces($functions, $this->namespaces);
         }
+
+        if ($this->prefixes !== []) {
+            $functions = $this->filterByPrefixes($functions, $this->prefixes);
+        }
         foreach ($functions as $function) {
             $refFunction = new \ReflectionFunction($function);
 
@@ -176,6 +190,10 @@ class HookResolver
         if ($this->namespaces !== []) {
             $classes = $this->filterByNamespaces($classes, $this->namespaces);
         }
+
+        if ($this->prefixes !== []) {
+            $classes = $this->filterByPrefixes($classes, $this->prefixes);
+        }
         foreach ($classes as $class) {
             $refClass = new \ReflectionClass($class);
 
@@ -220,6 +238,24 @@ class HookResolver
         $return = [];
         foreach ($namespaces as $namespace) {
             $return[] = array_filter($functionsOrClasses, fn (string $key) => stripos($key, $namespace) !== false);
+        }
+
+        // Flatten the array.
+        return array_merge([], ...$return);
+    }
+
+    private function filterByPrefixes(array $functionsOrClasses, array $prefixes)
+    {
+        $return = [];
+        foreach ($prefixes as $prefix) {
+            $return[] = array_filter(
+                $functionsOrClasses,
+                static function (string $key) use ($prefix) {
+                    $functionOrClassParts = explode('\\', $key);
+
+                    return stripos(end($functionOrClassParts), $prefix) === 0;
+                }
+            );
         }
 
         // Flatten the array.

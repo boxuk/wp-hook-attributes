@@ -41,6 +41,11 @@ final class WordPressHookAttributes
             $hookResolver->registerNamespace($registeredNamespace);
         }
 
+        $registeredPrefixes = apply_filters('wp_hook_attributes_registered_prefixes', []);
+        foreach ($registeredPrefixes as $registeredPrefix) {
+            $hookResolver->registerPrefix($registeredPrefix);
+        }
+
         $registeredFunctionFiles = apply_filters('wp_hook_attributes_registered_function_files', []);
         foreach ($registeredFunctionFiles as $registeredFunctionFile) {
             $hookResolver->registerFunctionsFile($registeredFunctionFile);

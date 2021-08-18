@@ -52,6 +52,18 @@ class HookResolverTest extends TestCase
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 
+    public function test_functions_can_be_filtered_by_prefix(): void
+    {
+        $hookResolver = self::createHookResolver();
+        $hookResolver->registerNamespace('BoxUk\WpHookAttributes\Tests\Resources\Sub');
+        $hookResolver->registerFunctionsFile(__DIR__ . '/Resources/Sub/functions.php');
+        $hookResolver->registerPrefix('basic_');
+        $hooks = $hookResolver->resolveFunctionHooks();
+
+        self::assertCount(2, $hooks); // 6 functions declared in the required functions file.
+        self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
+    }
+
     public function test_hooks_are_resolved_on_autoloaded_class(): void
     {
         $example = new Example();
@@ -81,6 +93,19 @@ class HookResolverTest extends TestCase
         $hooks = $hookResolver->resolveClassHooks();
 
         self::assertCount(6, $hooks); // 6 functions declared in the Sub Example class.
+        self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
+    }
+
+    public function test_classes_can_be_filtered_by_prefix(): void
+    {
+        require_once __DIR__ . '/Resources/ExampleWithNoNamespace.php';
+        $hookResolver = self::createHookResolver();
+        $hookResolver->registerPrefix('ExampleWithNoNameSpace');
+        $hookResolver->registerClass(\BoxUk\WpHookAttributes\Tests\Resources\Example::class);
+        $hookResolver->registerClass(\ExampleWithNoNamespace::class);
+        $hooks = $hookResolver->resolveClassHooks();
+
+        self::assertCount(6, $hooks); // 6 functions declared in the ExampleWithNoNamespace class only.
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
     }
 

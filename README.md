@@ -110,19 +110,29 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 
 > Note: Anything lower than PHP 7.4 is not supported.
 
-## Registering a namespace (highly recommended)
+## Registering a namespace or prefix (highly recommended)
 
-You likely want to register a namespace to ensure it only looks for attributes/annotations for your code. You can do so via the following hook:
+You likely want to register a namespace or prefix to ensure it only looks for attributes/annotations for your code. You can do so via the following hook:
+
+**If you're using annotations and don't do this it will likely be extremely slow**
 
 ```php
+// Namespace
 add_filter( 'wp_hook_attributes_registered_namespaces', function() {
 	return [
 		'BoxUk\Mu\Plugins',
 	];
 });
+
+// Prefix
+add_filter( 'wp_hook_attributes_registered_prefixes', function() {
+	return [
+		'boxuk_',
+	];
+});
 ```
 
-> It does a `stripos()` comparison, so you can just put the first part of the namespace.
+> It does a `stripos()` comparison, so you can just put the first part of the namespace/prefix.
 
 ## Registering files and classes
 
