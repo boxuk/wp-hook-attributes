@@ -13,7 +13,7 @@ final class Example
      * @ActionAnnotation("init")
      */
     #[Action('init')]
-    public function basic_action(): string
+    public static function basic_action(): string
     {
         return 'Basic action works!';
     }
@@ -22,7 +22,7 @@ final class Example
      * @FilterAnnotation("the_content")
      */
     #[Filter('the_content')]
-    public function basic_filter(): string
+    public static function basic_filter(): string
     {
         return 'Basic filter works!';
     }
@@ -31,7 +31,7 @@ final class Example
      * @ActionAnnotation("init", priority="99")
      */
     #[Action('init', priority: 99)]
-    public function action_with_priority(): string
+    public static function action_with_priority(): string
     {
         return 'Action with priority works!';
     }
@@ -40,7 +40,7 @@ final class Example
      * @ActionAnnotation("init", args="2")
      */
     #[Action('init', args: 2)]
-    public function action_with_args(int $a, int $b): string
+    public static function action_with_args(int $a, int $b): string
     {
         return 'Action with args works!';
     }
@@ -49,7 +49,7 @@ final class Example
      * @FilterAnnotation("the_content", priority="99")
      */
     #[Filter('the_content', priority: 99)]
-    public function filter_with_priority(): string
+    public static function filter_with_priority(): string
     {
         return 'Filter with priority works!';
     }
@@ -58,7 +58,7 @@ final class Example
      * @FilterAnnotation("the_content", args="2")
      */
     #[Filter('the_content', args: 2)]
-    public function filter_with_args(int $a, int $b): string
+    public static function filter_with_args(int $a, int $b): string
     {
         return 'Filter with args works!';
     }

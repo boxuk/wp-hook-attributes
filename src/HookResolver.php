@@ -64,6 +64,18 @@ class HookResolver
         }
     }
 
+    /**
+     * Resets all registered namespaces, classes and functions.
+     */
+    public function reset(): self
+    {
+        $this->namespaces = [];
+        $this->classes = [];
+        $this->functions = [];
+
+        return $this;
+    }
+
     public function resolveHooks(): array
     {
         return array_merge($this->resolveFunctionHooks(), $this->resolveClassHooks());
@@ -181,12 +193,18 @@ class HookResolver
                 }
 
                 if ($actionAttributes !== []) {
+                    if (! $method->isStatic()) {
+                        throw new MethodIsNotStaticException('Hooks can only be defined as attributes/annotations on static methods');
+                    }
                     foreach ($actionAttributes as $actionAttribute) {
                         $attributes[$class . '::' . $method->getName()] = $actionAttribute;
                     }
                 }
 
                 if ($filterAttributes !== []) {
+                    if (! $method->isStatic()) {
+                        throw new MethodIsNotStaticException('Hooks can only be defined as attributes/annotations on static methods');
+                    }
                     foreach ($filterAttributes as $filterAttribute) {
                         $attributes[$class . '::' . $method->getName()] = $filterAttribute;
                     }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use BoxUk\WpHookAttributes\WordPressHookAttributes;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Dotenv\Dotenv;
 

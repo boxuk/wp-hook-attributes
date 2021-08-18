@@ -6,8 +6,10 @@ namespace BoxUk\WpHookAttributes\Tests;
 
 use BoxUk\WpHookAttributes\Hook\AbstractHook;
 use BoxUk\WpHookAttributes\HookResolver;
+use BoxUk\WpHookAttributes\MethodIsNotStaticException;
 use BoxUk\WpHookAttributes\Tests\Resources\Example;
 use PHPUnit\Framework\TestCase;
+use BoxUk\WpHookAttributes\Tests\Resources\ExampleObject;
 
 class HookResolverTest extends TestCase
 {
@@ -53,7 +55,8 @@ class HookResolverTest extends TestCase
     public function test_hooks_are_resolved_on_autoloaded_class(): void
     {
         $example = new Example();
-        $hooks = $this->hookResolver->resolveClassHooks();
+        $hookResolver = self::createHookResolver();
+        $hooks = $hookResolver->resolveClassHooks();
 
         self::assertCount(6, $hooks); // 6 methods declared in the Example class.
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
@@ -87,5 +90,25 @@ class HookResolverTest extends TestCase
 
         self::assertCount(36, $hooks); // This number is made up of all declared functions and methods, will need to be updated upon addition of a new fixture file.
         self::assertContainsOnlyInstancesOf(AbstractHook::class, array_column($hooks, 'hook'));
+    }
+
+    public function test_reset_resets_all_registered_elements(): void
+    {
+        $hooks = $this->hookResolver->resolveHooks();
+        self::assertGreaterThan(0, count($hooks));
+
+        $this->hookResolver->reset();
+        $hooks = $this->hookResolver->resolveHooks();
+        self::assertCount(0, $hooks);
+    }
+
+    public function test_hooks_raises_exception_for_non_static_callbacks(): void
+    {
+        require_once __DIR__ . '/Resources/ExampleObject.php';
+        $this->hookResolver->reset();
+        $this->hookResolver->registerClass(ExampleObject::class);
+
+        $this->expectException(MethodIsNotStaticException::class);
+        $hooks = $this->hookResolver->resolveClassHooks();
     }
 }

@@ -10,7 +10,7 @@
 
 ### Enable caching (optional, recommended for production)
 
-Basic array based caching is enabled as standard but in production you may wish to bring in a more optimal adapter. Below is an example using memacache, but any PSR-6 adapter is supported.
+Basic array based caching is enabled as standard but in production you may wish to bring in a more optimal adapter. Below is an example using memcache, but any [PSR-6](https://www.php-fig.org/psr/psr-6/) adapter is supported.
 
 `composer require cache/memcache-adapter`
 
@@ -64,7 +64,7 @@ function advanced_action( string $arg1, int $arg2, bool $arg3, array $arg4 ): st
 }
 ```
 
-Not on PHP8 yet? You can also use annotations (**not recommended**):
+Not on PHP8 yet? You can use annotations instead
 
 ```php
 use BoxUk\WpHookAttributes\Hook\Annotations\Action;
@@ -113,9 +113,7 @@ add_filter( 'wp_hook_attributes_registered_namespaces', function() {
 
 ## Registering files and classes
 
-Currently only works with defined functions and declared classes that are registered before `init` hook. If you have a functions file or class that is registered (required) after this point, you can register manually.
-
-To get around this you can register function files or classes manually using the following hooks.
+Currently only works with defined functions and declared classes that are registered before the `init` hook. To get around this you can register function files or classes manually using the following hooks. This will need to be done prior to `init` though.
 
 ```php
 add_filter( 'wp_hook_attributes_registered_function_files', function() {
@@ -133,9 +131,9 @@ add_filter( 'wp_hook_attributes_registered_classes', function() {
 
 ## Ignoring existing annotation names
 
-Sometimes you may get errors when using annotations that an existing annotation hasn't been imported. This is because sometimes you find not standard annotations or docblock parameters that we need to ignore. 
+Sometimes you may get errors when using annotations that an existing annotation hasn't been imported. This is because sometimes you find non-standard annotations or docblock parameters that we need to ignore. 
 
-Some common WordPress and related libraries are ignored by default but it won't cover everything.
+Some common WordPress and related libraries are ignored by default, but it won't cover everything.
 
 You can ignore any custom annotations you need to with the following hook:
 
@@ -206,3 +204,26 @@ set_current_user
 ```
 
 > Source: http://rachievee.com/the-wordpress-hooks-firing-sequence/
+
+### Non-static methods are not supported
+
+If you have a method which relies on an instance of the current object, for examples:
+
+```php
+class Example {
+    private $foo = 'world';
+    
+    public function hello(): string {
+        return 'Hello ' . $this->foo;
+    }
+}
+```
+
+You are able to set up a callback using an instance of `Example`, e.g. 
+
+```php
+$example = new Example();
+$callback = [ $example, 'hello' ];
+```
+
+However, this isn't supported with this library because it cannot make an assumption on how it instantiates the class. Therefore, only static methods will work. It also requires methods are marked as static even if they are implicitly static. This is good practice anyway as using a method as static if not explicitly declared will raise a PHP Deprecated on PHP 7.4 and a Fatal Error on PHP 8.
