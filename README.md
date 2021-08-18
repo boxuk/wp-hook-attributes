@@ -17,8 +17,7 @@
       "type": "vcs",
       "url": "https://github.com/boxuk/wp-hook-attributes"
     }
-  ],
-  ...
+  ]
 }
 ```
 
