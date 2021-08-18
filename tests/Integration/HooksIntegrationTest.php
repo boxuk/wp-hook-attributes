@@ -1,6 +1,6 @@
 <?php
 
-use BoxUk\WpHookAttributes\WordPressHookAttributes;
+declare(strict_types=1);
 
 /**
  * @group integration

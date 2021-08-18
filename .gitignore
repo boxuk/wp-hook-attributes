@@ -5,3 +5,4 @@ clover.xml
 .php-cs-fixer.cache
 tests/integration/wp
 .env
+wp-content
