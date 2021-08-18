@@ -8,6 +8,20 @@
 
 `composer require boxuk/wp-hook-attributes`
 
+> Until this is on packagist or similar, you will need to add this repository to your `composer.json` repositories section, see below for an example:
+
+```json
+{
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/boxuk/wp-hook-attributes"
+    }
+  ],
+  ...
+}
+```
+
 ### Enable caching (optional, recommended for production)
 
 Basic array based caching is enabled as standard but in production you may wish to bring in a more optimal adapter. Below is an example using memcache, but any [PSR-6](https://www.php-fig.org/psr/psr-6/) adapter is supported.
