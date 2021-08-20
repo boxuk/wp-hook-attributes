@@ -80,6 +80,7 @@ class HookResolver
     public function reset(): self
     {
         $this->namespaces = [];
+        $this->prefixes = [];
         $this->classes = [];
         $this->functions = [];
 
