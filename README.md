@@ -36,12 +36,12 @@ use Psr\Cache\CacheItemPoolInterface;
 if ( wp_get_environment_type() === 'production' ) {
 	add_filter(
 		'wp_hook_attributes_cache_adapter',
-		function (CacheItemPoolInterface $cache_adapter): CacheItemPoolInterface {
+		function ( CacheItemPoolInterface $cache_adapter ): CacheItemPoolInterface {
 			global $wp_object_cache;
-			if ($wp_object_cache->get_mc('default') instanceof \Memcache) {
-				$client = $wp_object_cache->get_mc('default');
+			if ( $wp_object_cache->get_mc( 'default' ) instanceof \Memcache ) {
+				$client = $wp_object_cache->get_mc( 'default' );
 
-				return new MemcacheCachePool($client);
+				return new MemcacheCachePool( $client );
 			}
 
 			return $cache_adapter;
