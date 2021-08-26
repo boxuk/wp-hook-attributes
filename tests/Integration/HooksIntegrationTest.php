@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use BoxUk\WpHookAttributes\WordPressHookAttributes;
+
 /**
  * @group integration
  */
@@ -29,6 +31,26 @@ class HooksIntegrationTest extends WP_UnitTestCase
         $output = ob_get_clean();
 
         self::assertEmpty($output);
+    }
+
+    /**
+     * Unless we call our resolver directly.
+     */
+    public function test_attributes_do_work_for_pre_init_hooks_when_calling_resolver_directly(): void
+    {
+        /*
+         * By this point we know the file has been required but the apply_filters() is going to be called pre-init
+         * which is where our hook manager will automatically kick in. We can get around this though by calling direct.
+         * We can call this as many times as we need.
+         */
+        (new WordPressHookAttributes())();
+        ob_start();
+        do_action('muplugins_loaded');
+        do_action('init');
+        $output = ob_get_clean();
+
+        self::assertNotEmpty($output);
+        self::assertEquals('on muplugins_loaded action', $output);
     }
 
     /**

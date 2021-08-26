@@ -11,5 +11,5 @@ use BoxUk\WpHookAttributes\Hook\Annotations\Action as ActionAnnotation;
 #[Action('muplugins_loaded')]
 function muplugins_loaded_action(): void
 {
-    echo 'Should not fire';
+    echo 'on muplugins_loaded action';
 }

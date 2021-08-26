@@ -26,7 +26,7 @@ if ($is_integration) {
     tests_add_filter('muplugins_loaded', function () {
         require_once __DIR__ . '/Integration/Resources/pre-init-functions.php';
         require_once __DIR__ . '/Integration/Resources/post-init-functions.php';
-    });
+    }, 0);
 
     require $tests_dir . '/includes/bootstrap.php';
     require __DIR__ . '/../wp-hook-attributes.php';

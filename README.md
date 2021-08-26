@@ -136,7 +136,7 @@ add_filter( 'wp_hook_attributes_registered_prefixes', function() {
 
 ## Registering files and classes
 
-Currently only works with defined functions and declared classes that are registered before the `init` hook. To get around this you can register function files or classes manually using the following hooks. This will need to be done prior to `init` though.
+Currently only works with defined functions and declared classes that are registered before the `init` hook. To get around this you can register function files or classes manually using the following hooks. This will need to be done prior to `init` though, or the resolver will need to be called manually (details below).
 
 ```php
 add_filter( 'wp_hook_attributes_registered_function_files', function() {
@@ -172,6 +172,58 @@ add_filter(
 
 ## Limitations
 
+### Attributes on hooks prior to `init` require a bit more work
+
+If you wish to use hooks prior to the `init` hook, for example `muplugins_loaded` you will not be able to use attributes for these without a bit more effort. As they would have already been called by the point the hook resolver is called, you will need to call the hook resolver yourself manually. For example, let's say you have a hook on `muplugins_loaded` which is a pre-init hook.
+
+```php
+/**
+ * @ActionAnnotation("muplugins_loaded")
+ */
+#[Action('muplugins_loaded')]
+function muplugins_loaded_action(): void
+{
+    echo 'on muplugins_loaded action';
+}
+```
+
+The `muplugins_loaded` hook would have already been called by the time our `init` hook is called which calls the hook resolver. So in these scenarios, you'll need to call the hook resolver manually, e.g.
+
+```php
+/**
+ * @ActionAnnotation("muplugins_loaded")
+ */
+#[Action('muplugins_loaded')]
+function muplugins_loaded_action(): void
+{
+    echo 'on muplugins_loaded action';
+}
+
+// Some place earlier than `muplugins_loaded`, maybe a `000-my-project.php` or something within `mu-plugins`.
+( new WordPressHookAttributes() )();
+```
+
+> See the next limitation as to why we don't load the resolver this early by default.
+
+The main hooks that this applies to is (but not limited to):
+
+```
+muplugins_loaded
+registered_taxonomy
+registered_post_type
+plugins_loaded
+sanitize_comment_cookies
+setup_theme
+unload_textdomain
+load_textdomain
+after_setup_theme
+auth_cookie_malformed
+auth_cookie_valid
+set_current_user
+```
+
+> Source: http://rachievee.com/the-wordpress-hooks-firing-sequence/
+
 ### Functions/methods must be registered before the `init` hook
 
 Attributes should work for any function/method registered before the `init` hook is called. Any function/method that is registered as part of an `mu-plugin` or a `theme` should work as the hooks to load these are called prior to `init`.
@@ -204,29 +256,6 @@ add_action( 'muplugins-loaded', function() {
     require_once 'my-functions.php';
 });
 ```
-
-### Attributes on hooks prior to `init` are not supported
-
-If you wish to use hooks prior to the `init` hook, for example `muplugins_loaded` you will not be able to use attributes for these, as they would have already been called by the point the hook resolver is called.
-
-The main hooks that this applies to is (but not limited to):
-
-```
-muplugins_loaded
-registered_taxonomy
-registered_post_type
-plugins_loaded
-sanitize_comment_cookies
-setup_theme
-unload_textdomain
-load_textdomain
-after_setup_theme
-auth_cookie_malformed
-auth_cookie_valid
-set_current_user
-```
-
-> Source: http://rachievee.com/the-wordpress-hooks-firing-sequence/
 
 ### Non-static methods are not supported
 
