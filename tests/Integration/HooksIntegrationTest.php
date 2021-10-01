@@ -68,7 +68,7 @@ class HooksIntegrationTest extends WP_UnitTestCase
     }
 
     /**
-     * If not required by the auotloader or implicitly elsewhere, they can be manually registered. They must be
+     * If not required by the autoloader or implicitly elsewhere, they can be manually registered. They must be
      * registered before the `init()` method is called though.
      */
     public function test_attributes_work_for_hooks_when_manually_registered_before_init(): void
@@ -86,5 +86,32 @@ class HooksIntegrationTest extends WP_UnitTestCase
 
         self::assertNotEmpty($output);
         self::assertEquals('on wp action', $output);
+    }
+
+
+    /**
+     * If not required by the autoloader or implicitly elsewhere, they can be manually registered. They must be
+     * registered before the `init()` method is called though.
+     */
+    public function test_attributes_work_for_hooks_in_registered_classes_called_before_init(): void
+    {
+        // Register class in mu-plugin.
+        tests_add_filter('wp_hook_attributes_registered_classes', function () {
+            return [
+                \BoxUk\WpHookAttributes\Tests\Integration\Resources\Example::class,
+            ];
+        });
+
+        // Call the class from theme/functions.php
+        require_once __DIR__ . '/Resources/Example.php';
+        new \BoxUk\WpHookAttributes\Tests\Integration\Resources\Example();
+
+        // Fire off out init action.
+        ob_start();
+        do_action('init');
+        $output = ob_get_clean();
+
+        self::assertNotEmpty($output);
+        self::assertEquals('on init action', $output);
     }
 }
