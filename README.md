@@ -139,16 +139,22 @@ add_filter( 'wp_hook_attributes_registered_prefixes', function() {
 Currently only works with defined functions and declared classes that are registered before the `init` hook. To get around this you can register function files or classes manually using the following hooks. This will need to be done prior to `init` though, or the resolver will need to be called manually (details below).
 
 ```php
-add_filter( 'wp_hook_attributes_registered_function_files', function() {
-	return [
-		'path/to/my/file/with/functions.php',
-	];
+add_filter( 'wp_hook_attributes_registered_function_files', function( array $registered_files) {
+	return array_merge(
+		$registered_files,
+			[
+				'path/to/my/file/with/functions.php'
+			]
+	);
 });
 
-add_filter( 'wp_hook_attributes_registered_classes', function() {
-	return [
-		'Fqcn\Of\My\Class',
-	];
+add_filter( 'wp_hook_attributes_registered_classes', function( array $registered_classes) {
+	return array_merge(
+		$registered_classes,
+			[
+				RegistrationService::class,
+			]
+	);
 });
 ```
 
