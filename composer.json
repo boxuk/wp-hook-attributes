@@ -28,7 +28,10 @@
     "config": {
         "classmap-authoritative": true,
         "sort-packages": true,
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "roots/wordpress-core-installer": true
+        }
     },
     "scripts": {
         "test:unit": "vendor/bin/phpunit --testsuite unit",
