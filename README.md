@@ -2,34 +2,17 @@
 
 [![Build Status](https://app.travis-ci.com/boxuk/wp-hook-attributes.svg?token=3rRfYiN6sMupp1z6RpzN&branch=main)](https://app.travis-ci.com/boxuk/wp-hook-attributes)
 
-> **This library should be considered experimental and not production ready.**
-
 ## Installation
 
 `composer require boxuk/wp-hook-attributes`
 
-> Until this is on packagist or similar, you will need to add this repository to your `composer.json` repositories section, see below for an example:
-
-```json
-{
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/boxuk/wp-hook-attributes"
-    }
-  ]
-}
-```
-
-### Enable caching (optional, recommended for production)
+### Enable caching (recommended for production when using annotations)
 
 Basic array based caching is enabled as standard but in production you may wish to bring in a more optimal adapter. Below is an example using memcache, but any [PSR-6](https://www.php-fig.org/psr/psr-6/) adapter is supported.
 
 `composer require cache/memcache-adapter`
 
 ```php
-use Doctrine\Common\Annotations\Reader;
-use BoxUk\WpHookAttributes\PsrCachedAnnotationReader;
 use Cache\Adapter\Memcache\MemcacheCachePool;
 use Psr\Cache\CacheItemPoolInterface;
 
@@ -49,6 +32,8 @@ if ( wp_get_environment_type() === 'production' ) {
 	);
 }
 ```
+
+> Note: This only applies when using annotations, not needed when using PHP8 and attributes.
 
 ## Usage
 
@@ -118,14 +103,14 @@ You likely want to register a namespace or prefix to ensure it only looks for at
 
 ```php
 // Namespace
-add_filter( 'wp_hook_attributes_registered_namespaces', function() {
+add_filter( 'wp_hook_attributes_registered_namespaces', function(): array {
 	return [
 		'BoxUk\Mu\Plugins',
 	];
 });
 
 // Prefix
-add_filter( 'wp_hook_attributes_registered_prefixes', function() {
+add_filter( 'wp_hook_attributes_registered_prefixes', function(): array {
 	return [
 		'boxuk_',
 	];
@@ -139,7 +124,7 @@ add_filter( 'wp_hook_attributes_registered_prefixes', function() {
 Currently only works with defined functions and declared classes that are registered before the `init` hook. To get around this you can register function files or classes manually using the following hooks. This will need to be done prior to `init` though, or the resolver will need to be called manually (details below).
 
 ```php
-add_filter( 'wp_hook_attributes_registered_function_files', function( array $registered_files) {
+add_filter( 'wp_hook_attributes_registered_function_files', function( array $registered_files ): array {
 	return array_merge(
 		$registered_files,
 			[
@@ -148,7 +133,7 @@ add_filter( 'wp_hook_attributes_registered_function_files', function( array $reg
 	);
 });
 
-add_filter( 'wp_hook_attributes_registered_classes', function( array $registered_classes) {
+add_filter( 'wp_hook_attributes_registered_classes', function( array $registered_classes ): array {
 	return array_merge(
 		$registered_classes,
 			[
