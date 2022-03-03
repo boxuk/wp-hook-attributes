@@ -22,7 +22,7 @@ These are run offline at the developers request. The purpose of these tests is t
 
 > Update details accordingly
 
-`tests/create-test-db.sh`
+`tests/Integration/create-test-db.sh`
 
 ### Running the tests
 

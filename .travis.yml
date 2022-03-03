@@ -1,9 +1,11 @@
 language: php
 
+dist: bionic
+
 php:
     - 7.4
     - 8.0
-    - nightly
+    - 8.1.0
 
 matrix:
     allow_failures:
