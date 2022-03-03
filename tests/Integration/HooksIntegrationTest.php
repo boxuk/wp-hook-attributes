@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
+namespace BoxUk\WpHookAttributes\Tests\Integration;
+
 use BoxUk\WpHookAttributes\WordPressHookAttributes;
+use WP_UnitTestCase;
 
 /**
  * @group integration
  */
 class HooksIntegrationTest extends WP_UnitTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         // Makes the tests much faster.
         tests_add_filter('wp_hook_attributes_registered_namespaces', function () {

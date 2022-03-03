@@ -15,7 +15,8 @@ $is_integration = isset($GLOBALS['argv'][2]) && $GLOBALS['argv'][2] === 'integra
 
 if ($is_integration) {
     if (is_readable(__DIR__ . '/integration/.env')) {
-        $dotenv = new Dotenv(true);
+        $dotenv = new Dotenv();
+        $dotenv->usePutenv(true);
         $dotenv->load(__DIR__ . '/integration/.env');
     }
 
