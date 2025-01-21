@@ -1,6 +1,7 @@
 {
     "name": "boxuk/wp-hook-attributes",
     "type": "wordpress-muplugin",
+    "abandoned": true,
     "description": "A mu-plugin to allow the use of PHP attributes for WordPress hooks",
     "license": "MIT",
     "autoload": {
