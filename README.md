@@ -1,6 +1,6 @@
 # WordPress Hook Attributes
 
-[![Build Status](https://app.travis-ci.com/boxuk/wp-hook-attributes.svg?token=3rRfYiN6sMupp1z6RpzN&branch=main)](https://app.travis-ci.com/boxuk/wp-hook-attributes)
+> This project is now abandoned. If you're interested in taking it over, get in touch.
 
 ## Installation
 
